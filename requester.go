@@ -252,6 +252,11 @@ func (r *Requester) closeRecord() {
 	})
 }
 
+// DoRequest 执行一个 HTTP 请求并记录相关统计信息。
+// 它接收一个 fasthttp.Request 请求对象、一个 fasthttp.Response 响应对象和一个 ReportRecord 记录对象。
+// 该方法会记录请求的执行时间、响应状态码和可能发生的错误。
+// 如果响应状态码大于等于 500，响应头信息会被写入错误输出。
+// 所有响应体都会被写入指定的输出（错误输出或丢弃）。
 func (r *Requester) DoRequest(req *fasthttp.Request, resp *fasthttp.Response, rr *ReportRecord) {
 	startTime := time.Unix(0, atomic.LoadInt64(&startTimeUnixNano))
 	t1 := time.Since(startTime)
@@ -286,6 +291,14 @@ func (r *Requester) DoRequest(req *fasthttp.Request, resp *fasthttp.Response, rr
 	rr.error = ""
 }
 
+/*
+Run 函数是 Requester 的核心方法，用于启动并管理 HTTP 请求的并发执行。它支持以下功能：
+控制并发请求数量。
+支持速率限制。
+支持运行时动态取消（如通过 Ctrl+C 终止）。
+支持请求的分批启动（ramp-up）。
+记录请求的执行结果。
+*/
 func (r *Requester) Run() {
 	// handle ctrl-c
 	sigs := make(chan os.Signal, 1)
@@ -299,6 +312,7 @@ func (r *Requester) Run() {
 		r.closeRecord()
 		cancelFunc()
 	}()
+	// 功能：记录程序启动时间，用于计算请求的耗时
 	atomic.StoreInt64(&startTimeUnixNano, time.Now().UnixNano())
 	if r.duration > 0 {
 		time.AfterFunc(r.duration, func() {
@@ -306,16 +320,21 @@ func (r *Requester) Run() {
 			cancelFunc()
 		})
 	}
-
+	// 功能：根据 r.reqRate 初始化速率限制器。
+	// limiter：速率限制器，用于控制请求的发送频率。
+	// r.reqRate：每秒允许的最大请求数。
 	var limiter *rate.Limiter
 	if r.reqRate != nil {
 		limiter = rate.NewLimiter(*r.reqRate, 1)
 	}
-
+	// semaphore：剩余请求计数器，用于限制总请求数。
+	// r.rampUp：每批启动的并发请求数，默认为总并发数。
 	semaphore := r.requests
 	if r.rampUp <= 0 {
 		r.rampUp = r.concurrency
 	}
+	// concurrencyCount：当前已启动的并发请求数。
+	// loopCount：计算需要分批启动的批次数。
 	concurrencyCount := 0
 	loopCount := int(math.Ceil(float64(r.concurrency) / float64(r.rampUp)))
 	for i := 0; i < loopCount; i++ {

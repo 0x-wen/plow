@@ -1,0 +1,84 @@
+server:
+  ip: "192.168.86.7"
+  port: "8000"
+  base_url: "https://explorer4.meuat.xyz"
+
+endpoints:
+  # homepage
+  - name: "region_states"
+    path: "/api/rest/region/states"
+    method: "POST"
+    payload: '{"offset":0,"limit":100}'
+  # validators
+  - name: "validator_states"
+    path: "/api/rest/region/states"
+    method: "POST"
+    payload: '{"offset":0,"limit":100,"order_by":{"validator_info":{"weight":{"weight":"desc"}}}}'
+  # validators/details
+  - name: "region_details_chn"
+    path: "/api/rest/region/state?region_id=chn"
+    method: "GET"
+    payload: ""
+  - name: "region_details_me_earth"
+    path: "/api/rest/region/state?region_id=me_earth"
+    method: "GET"
+    payload: ""
+  - name: "region_details_usa"
+    path: "/api/rest/region/state?region_id=usa"
+    method: "GET"
+    payload: ""
+  # blocks
+  - name: "blocklist"
+    path: /api/rest/blocklist\?offset\=0\&limit\=100
+    method: "GET"
+    payload: 
+  - name: "blocks_rollapp_checkin"
+    path: /api/rest/blocklist/rollapp/checkin\?offset\=0\&limit\=100
+    method: "GET"
+    payload: 
+  
+  # block/details
+  - name: "blockdetail"
+    path: /api/rest/blockdetail\?height\=3456000
+    method: "GET"
+    payload: ""
+  - name: "blockdetail_rollapp"
+    path: /api/rest/blockdetail/rollapp\?height\=65238
+    method: "GET"
+    payload: ""
+
+  # txs
+  - name: "txlist"
+    path: /api/rest/txlist\?limit\=100\&offset\=0
+    method: "GET"
+    payload: ""
+  - name: "ibc_txlist"
+    path: /api/rest/txlist/ibc\?limit\=100\&offset\=0
+    method: "GET"
+    payload: ""
+  - name: "txlist_rollapp"
+    path: /api/rest/txlist/rollapp/checkin\?limit\=100\&offset\=0
+    method: "GET"
+    payload: ""
+  - name: "rollapp_update_states"
+    path: /api/rest/rollapp/update-states\?limit\=100\&offset\=0
+    method: "GET"
+    payload: ""
+  
+  # tx/details
+  - name: "txdetail"
+    path: /api/rest/tx/37D75D8DB4858BF03A2BBED145E699B15DC564DCA7E460B5D67840AC3A399B53
+    method: "GET"
+    payload: ""
+  - name: "txdetail_rollapp"
+    path: /api/rest/rollapp/tx\?hash\=4BCC4CCBBBF594F53248AB680C298F8FE4A212B88F0B40600BA044C6F666095B
+    method: "GET"
+    payload: ""
+
+
+benchmark:
+  concurrency: 2000
+  duration: "300s"
+  requests: 1000000
+  listen: "127.0.0.1:18888"
+  output_dir: "./results"

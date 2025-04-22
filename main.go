@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"net"
+	// "net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -282,16 +282,16 @@ func main() {
 	fmt.Fprintln(os.Stderr, desc)
 
 	// charts listener
-	var ln net.Listener
-	if *chartsListenAddr != "" {
-		ln, err = net.Listen("tcp", *chartsListenAddr)
-		if err != nil {
-			errAndExit(err.Error())
-			return
-		}
-		fmt.Fprintf(os.Stderr, "@ Real-time charts is listening on http://%s\n", ln.Addr().String())
-	}
-	fmt.Fprintln(os.Stderr, "")
+	// var ln net.Listener
+	// if *chartsListenAddr != "" {
+	// 	ln, err = net.Listen("tcp", *chartsListenAddr)
+	// 	if err != nil {
+	// 		errAndExit(err.Error())
+	// 		return
+	// 	}
+	// 	fmt.Fprintf(os.Stderr, "@ Real-time charts is listening on http://%s\n", ln.Addr().String())
+	// }
+	// fmt.Fprintln(os.Stderr, "")
 
 	// do request
 	go requester.Run()
@@ -300,15 +300,15 @@ func main() {
 	report := NewStreamReport()
 	go report.Collect(requester.RecordChan())
 
-	if ln != nil {
-		// serve charts data
-		charts, err := NewCharts(ln, report.Charts, desc)
-		if err != nil {
-			errAndExit(err.Error())
-			return
-		}
-		go charts.Serve(*autoOpenBrowser)
-	}
+	// if ln != nil {
+	// 	// serve charts data
+	// 	charts, err := NewCharts(ln, report.Charts, desc)
+	// 	if err != nil {
+	// 		errAndExit(err.Error())
+	// 		return
+	// 	}
+	// 	go charts.Serve(*autoOpenBrowser)
+	// }
 
 	// terminal printer
 	printer := NewPrinter(*requests, *duration, !*clean, *summary)

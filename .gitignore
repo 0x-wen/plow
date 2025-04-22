@@ -17,3 +17,7 @@ vendor/
 bench_server/bench_server
 plow*
 dist/
+
+# idea and build
+build/
+.idea/
