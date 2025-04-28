@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -96,7 +97,7 @@ func main() {
 			fmt.Printf("Error running plow for %s: %v\n", endpoint.Path, err)
 			continue
 		}
-
+		time.Sleep(time.Second * 5)
 		fmt.Printf("Results saved to %s\n", outputFile)
 	}
 }

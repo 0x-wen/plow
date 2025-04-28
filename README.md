@@ -32,14 +32,40 @@ Summary:
   RPS      112741.713
   Reads    10.192MB/s
   Writes    6.774MB/s
+Elapsed: 程序运行的总时间（10.8 秒）。
+Count: 总请求数（1,000,000）。
+Counts: 按 HTTP 状态码分类的请求数，这里所有请求都是 2xx（成功）。
+RPS: 每秒请求数（92,113.334），表示系统的吞吐能力。
+Concurrency: 并发数（2,000），表示同时处理的请求数。
+Reads/Writes: 读取和写入的吞吐量，分别为 1140.506 MB/s 和 13.177 MB/s。
 
 Statistics    Min       Mean     StdDev      Max
   Latency     32µs      176µs     37µs     1.839ms
   RPS       108558.4  112818.12  2456.63  115949.98
+Latency:
+Min: 最小延迟（93 微秒）。
+Mean: 平均延迟（21.237 毫秒）。
+StdDev: 延迟的标准差（49.603 毫秒），表示延迟的波动范围。
+Max: 最大延迟（2.118095 秒）。
+
+RPS:
+Min: 最小每秒请求数（0）。
+Mean: 平均每秒请求数（86,393.33）。
+StdDev: 每秒请求数的标准差（31,029.04）。
+Max: 最大每秒请求数（103,241.29）。
 
 Latency Percentile:
   P50     P75    P90    P95    P99   P99.9  P99.99
   173µs  198µs  222µs  238µs  274µs  352µs  498µs
+
+Percentiles
+P50: 50% 的请求延迟小于 12.304 毫秒。
+P75: 75% 的请求延迟小于 24.336 毫秒。
+P90: 90% 的请求延迟小于 42.173 毫秒。
+P95: 95% 的请求延迟小于 62.098 毫秒。
+P99: 99% 的请求延迟小于 143.61 毫秒。
+P99.9: 99.9% 的请求延迟小于 600.815 毫秒。
+P99.99: 99.99% 的请求延迟小于 1.910146 秒。
 
 Latency Histogram:
   141µs  273028  ■■■■■■■■■■■■■■■■■■■■■■■■
@@ -50,16 +76,22 @@ Latency Histogram:
   320µs     721
   403µs      58
   524µs       3
+Histograms
+每个区间的平均延迟和请求数：
+"16.626ms", 870440: 平均延迟为 16.626 毫秒的请求有 870,440 个。
+"30.115ms", 82875: 平均延迟为 30.115 毫秒的请求有 82,875 个。
+依此类推，直方图展示了延迟分布的详细情况。
 ```
 
 - [Installation](#installation)
-    - [Via Go](#via-go)
-    - [Via Homebrew](#via-homebrew)
-    - [Via Docker](#via-docker)
+  - [Via Go](#via-go)
+  - [Via Homebrew](#via-homebrew)
+  - [Via Docker](#via-docker)
 - [Usage](#usage)
-    - [Options](#options)
-    - [Examples](#examples)
-- [Stargazers](#Stargazers)
+  - [Options](#options)
+  - [Examples](#examples)
+  - [Bash/ZSH Shell Completion](#bashzsh-shell-completion)
+- [Stargazers](#stargazers)
 - [License](#license)
 
 ## Installation
