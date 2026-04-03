@@ -131,8 +131,10 @@ type ClientOpt struct {
 	dialTimeout  time.Duration
 
 	socks5Proxy string
+	httpProxy   string
 	contentType string
 	host        string
+	unixSocket  string
 }
 
 func NewRequester(concurrency int, requests int64, duration time.Duration, reqRate *rate.Limit, errWriter io.Writer, clientOpt *ClientOpt, rampUp int) (*Requester, error) {
@@ -205,6 +207,12 @@ func buildRequestClient(opt *ClientOpt, r *int64, w *int64) (*fasthttp.HostClien
 			opt.socks5Proxy = "socks5://" + opt.socks5Proxy
 		}
 		httpClient.Dial = fasthttpproxy.FasthttpSocksDialer(opt.socks5Proxy)
+	} else if opt.unixSocket != "" {
+		httpClient.Dial = func(addr string) (net.Conn, error) {
+			return net.Dial("unix", opt.unixSocket)
+		}
+	} else if opt.httpProxy != "" {
+		httpClient.Dial = fasthttpproxy.FasthttpHTTPDialerDualStack(opt.httpProxy)
 	} else {
 		httpClient.Dial = fasthttpproxy.FasthttpProxyHTTPDialerTimeout(opt.dialTimeout)
 	}
@@ -339,7 +347,7 @@ func (r *Requester) Run() {
 	loopCount := int(math.Ceil(float64(r.concurrency) / float64(r.rampUp)))
 	for i := 0; i < loopCount; i++ {
 		for j := 0; j < r.rampUp; j++ {
-			if concurrencyCount > r.concurrency {
+			if concurrencyCount >= r.concurrency {
 				break
 			}
 			concurrencyCount++
